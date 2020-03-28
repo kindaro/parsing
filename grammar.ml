@@ -6,8 +6,7 @@ type ('a, 'b) symbol = Terminary of 'a terminal | Intermediary of 'b intermedial
 
 type ('a, 'b) rewrite_rule =
   { source: ('a, 'b) symbol * ('a, 'b) symbol list
-  ; target: ('a, 'b) symbol list
-  }
+  ; target: ('a, 'b) symbol list }
 
 type ('a, 'b) context_free_rule_group =
   { source: 'a intermedial
@@ -16,8 +15,7 @@ type ('a, 'b) context_free_rule_group =
 
 type ('a, 'b) grammar =
   { rules: ('a, 'b) rewrite_rule list
-  ; start: ('a, 'b) context_free_rule_group
-  }
+  ; start: ('a, 'b) context_free_rule_group }
 
 (*
 
@@ -42,10 +40,7 @@ let cat_rule_group: (string, string) context_free_rule_group =
   ; target =
       [ [Terminary cat_terminal]
       ; [ Intermediary cat_intermedial
-        ; Intermediary cat_intermedial
-        ]
-      ]
-  }
+        ; Intermediary cat_intermedial ] ] }
 
 let cat_grammar =
   let cat = cat_intermedial
@@ -58,7 +53,4 @@ let cat_grammar =
       ; target =
           [ [purr]
           ; [meow]
-          ; [Intermediary cat; Intermediary cat]
-          ]
-      }
-  }
+          ; [Intermediary cat; Intermediary cat] ] } }
