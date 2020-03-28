@@ -10,8 +10,7 @@ type ('a, 'b) rewrite_rule =
 
 type ('a, 'b) context_free_rule_group =
   { source: 'a intermedial
-  ; target: ((('a, 'b) symbol) list) list
-  }
+  ; target: ('a, 'b) symbol list list }
 
 type ('a, 'b) grammar =
   { rules: ('a, 'b) rewrite_rule list
