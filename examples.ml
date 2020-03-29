@@ -1,4 +1,4 @@
-
+open Core
 open Grammar
 
 let cat_intermedial = Intermedial "cat"
@@ -24,3 +24,20 @@ let cat_terminal = Terminal "purr"
           [ [purr]
           ; [meow]
           ; [Intermediary cat; Intermediary cat] ] } }
+
+let cat_string = List.map (String.to_list "purry cat says cat cat") ~f: (function x -> Intermediary (Intermedial x))
+
+let cat_rewrite: (char, char) rewrite_rule =
+  { source =
+      ( Intermediary (Intermedial 'c')
+      , [ Intermediary (Intermedial 'a')
+        ; Intermediary (Intermedial 't')
+        ]
+      )
+  ; target =
+      [ Intermediary (Intermedial 'p')
+      ; Intermediary (Intermedial 'u')
+      ;  Intermediary (Intermedial 'r')
+      ;  Intermediary (Intermedial 'r')
+      ]
+  }
