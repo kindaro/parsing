@@ -1,3 +1,3 @@
 (library
  (name parsing)
- (libraries core))
+ (libraries core uucp uutf uuseg uunf))
