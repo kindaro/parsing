@@ -1,3 +1,6 @@
+open Core
+open List
+
 type 'a terminal = Terminal of 'a
 
 type 'b intermedial = Intermedial of 'b
@@ -29,3 +32,9 @@ This way to define a grammar is isomorphic to the traditional quadruple ⟨non-t
 The sets of terminals and intermediaries can be derived by scanning the rule set. The start symbol is defined by the dedicated context-free rule group. The rule should then be added to the other rules.
 
 *)
+
+let expand_context_free_rule_group (u: ('a, 'b) context_free_rule_group): ('a, 'b) rewrite_rule list =
+  let f x: ('a, 'b) rewrite_rule  = {source = (Intermediary u.source, [ ]); target = x} in map u.target ~f: f
+
+let expand_grammar (u: ('a, 'b) grammar): ('a, 'b) rewrite_rule list * 'b intermedial =
+  let rules = append u.rules (expand_context_free_rule_group u.start) in (rules, u.start.source)
