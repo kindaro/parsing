@@ -26,38 +26,19 @@ let normalize_chars normalization_form (us: Uchar.t list): Uchar.t list =
   in let transcode = transcode' [ ]
   in List.rev (transcode us)
 
-let chars_to_graphemes (us: Uchar.t list): (grapheme list * (Uchar.t list * Uchar.t list)) =
+let chars_to_graphemes (us: Uchar.t list): (grapheme list * Uchar.t list) =
   let transcoder = Uuseg.create `Grapheme_cluster
-  in let rec roundtrip'
-      (just_started: bool)
-      (*Whether to ignore the first grapheme boundary. Used to avoid an empty grapheme at the
-        beginning of a string. *)
-      (graphemes: grapheme list)
-      (prefix: Uchar.t list)
-      (remainder: Uchar.t list)
-      (x)
-    : (grapheme list * (Uchar.t list * Uchar.t list))
-    (* Graphemes, then prefix and remainder of characters that do not form a complete grapheme.
-       Prefix can only occur when just started. *)
-    = match Uuseg.add transcoder x with
-    | `Await | `End -> (graphemes, (prefix, remainder))
-    | `Boundary -> if just_started
-      then roundtrip' false graphemes remainder [ ] `Await
-      else roundtrip' false (Grapheme (List.rev remainder) :: graphemes) prefix [ ] `Await
-    | `Uchar w -> roundtrip' just_started graphemes prefix (w :: remainder) `Await
-  in let roundtrip just_started = roundtrip' just_started [] [ ]
-  in let rec transcode' just_started (xs: grapheme list)
-      (prefix: Uchar.t list) (remainder: Uchar.t list) (us: Uchar.t list):
-    (grapheme list * (Uchar.t list * Uchar.t list)) = match us with
-      | [ ] -> let (ys, (prefix', remainder)) = roundtrip just_started remainder `End
-        in if just_started
-        then (List.rev (List.append ys xs), (List.rev prefix', List.rev remainder))
-        else (List.rev (List.append ys xs), (List.rev prefix, List.rev remainder))
-      | u :: us -> let (ys, (prefix', remainder)) = roundtrip just_started remainder (`Uchar u)
-        in if just_started
-        then transcode' false (List.append ys xs) prefix' remainder us
-        else transcode' false (List.append ys xs) prefix remainder us
-  in let transcode = transcode' true [ ] [ ] [ ]
+  in let rec roundtrip' (graphemes: grapheme list) (remainder: Uchar.t list) (x): (grapheme list * Uchar.t list) =
+       match Uuseg.add transcoder x with
+       | `Await | `End -> (graphemes, remainder)
+       | `Boundary -> roundtrip' (Grapheme (List.rev remainder) :: graphemes) [ ] `Await
+       | `Uchar w -> roundtrip' graphemes (w :: remainder) `Await
+  in let roundtrip = roundtrip' []
+  in let rec transcode' (xs: grapheme list) (remainder: Uchar.t list) (us: Uchar.t list): (grapheme list * Uchar.t list) =
+       match us with
+       | [ ] -> let (ys, remainder) = roundtrip remainder `End in (List.rev (List.append ys xs), List.rev remainder)
+       | u :: us -> let (ys, remainder) = roundtrip remainder (`Uchar u) in transcode' (List.append ys xs) remainder us
+  in let transcode = transcode' [ ] [ ]
   in transcode us
 
 let chars_to_string (us: Uchar.t list): string =
