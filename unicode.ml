@@ -26,7 +26,7 @@ let normalize_chars normalization_form (us: Uchar.t list): Uchar.t list =
   in let transcode = transcode' [ ]
   in List.rev (transcode us)
 
-let chars_to_graphemes (us: Uchar.t list): (grapheme list * Uchar.t list) =
+let chars_to_graphemes (us: Uchar.t list): (grapheme list * (Uchar.t list (* Prefix. *) * Uchar.t list (* Suffix.*))) =
   let transcoder = Uuseg.create `Grapheme_cluster
   in let rec roundtrip' (graphemes: grapheme list) (remainder: Uchar.t list) (x): (grapheme list * Uchar.t list) =
        match Uuseg.add transcoder x with
@@ -39,7 +39,9 @@ let chars_to_graphemes (us: Uchar.t list): (grapheme list * Uchar.t list) =
        | [ ] -> let (ys, remainder) = roundtrip remainder `End in (List.rev (List.append ys xs), List.rev remainder)
        | u :: us -> let (ys, remainder) = roundtrip remainder (`Uchar u) in transcode' (List.append ys xs) remainder us
   in let transcode = transcode' [ ] [ ]
-  in transcode us
+  in match transcode us with
+  | ([ ], remainder) -> ([ ], ([ ], remainder))
+  | (Grapheme xs :: xss, remainder) -> (xss, (xs, remainder))
 
 let chars_to_string (us: Uchar.t list): string =
   let temporary_buffer = Buffer.create 16
