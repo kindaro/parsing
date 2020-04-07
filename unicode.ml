@@ -12,7 +12,7 @@ let string_to_chars (s: string): Uchar.t list =
        | `Malformed _ -> decode_string (Uutf.u_rep :: us)
   in List.rev (decode_string [ ])
 
-let transcode_chars normalization_form (us: Uchar.t list): Uchar.t list =
+let normalize_chars normalization_form (us: Uchar.t list): Uchar.t list =
   let transcoder = Uunf.create normalization_form
   in let rec roundtrip' (ws: Uchar.t list) (x: Uunf.ret): Uchar.t list =
        match Uunf.add transcoder x with
