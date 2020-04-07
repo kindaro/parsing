@@ -62,3 +62,7 @@ let chars_to_string (us: Uchar.t list): string =
   in let () = encode_chars us in Buffer.contents temporary_buffer
 
 let grapheme_to_string (Grapheme us): string = chars_to_string us
+
+let graphemes (s: string): grapheme list = s |> string_to_chars |> chars_to_graphemes |> fst
+
+let show_graphemes (xs: grapheme list): string list = List.map xs ~f: grapheme_to_string
