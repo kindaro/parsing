@@ -38,3 +38,5 @@ let chars_to_string (us: Uchar.t list): string =
        | (u :: us) -> let () = push_one (`Uchar u) in encode_chars us
        | [ ] -> let () = push_one `End in ()
   in let () = encode_chars us in Buffer.contents temporary_buffer
+
+let grapheme_to_string (Grapheme us): string = chars_to_string us
