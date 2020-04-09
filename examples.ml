@@ -1,5 +1,8 @@
 open Core
 open Grammar
+open Chars
+open Utilities
+open Unicode
 
 let cat_intermedial = Intermedial "cat"
 
@@ -41,3 +44,7 @@ let cat_rewrite: (char, char) rewrite_rule =
       ;  Intermediary (Intermedial 'r')
       ]
   }
+
+let cat_graphemes = sf "PURRY CAT SAYS CAT CAT"
+
+let cat_rewrite_concise: (grapheme, grapheme) rewrite_rule = { source = uncons_exn (sf "CAT"); target = sf "purr" }
