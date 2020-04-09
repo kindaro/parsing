@@ -13,7 +13,7 @@ type 'a cut =
 let apply_rewrite_rule (rule: ('a, 'b) rewrite_rule) sentential_form =
   let select pattern sentential_form =
     let initial_selections = map2_exn
-        (range 0 (length sentential_form))
+        (range ~stop: `inclusive 0 (length sentential_form))
         (tails sentential_form)
         ~f: (fun offset xs -> { offset = offset ; selection = [ ] ; trailing = xs })
     and select_step (pattern, selections) = if is_empty selections
