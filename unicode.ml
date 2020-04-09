@@ -63,6 +63,8 @@ let chars_to_string (us: Uchar.t list): string =
 
 let grapheme_to_string (Grapheme us): string = chars_to_string us
 
-let graphemes (s: string): grapheme list = s |> string_to_chars |> chars_to_graphemes |> fst
+let graphemes (s: string): grapheme list = s |> string_to_chars |> normalize_chars `NFC |> chars_to_graphemes |> fst
 
 let show_graphemes (xs: grapheme list): string list = List.map xs ~f: grapheme_to_string
+
+let is_any_upper_case (Grapheme us): bool = List.exists us ~f: (Uucp.Case.is_upper)
