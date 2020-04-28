@@ -69,3 +69,9 @@ let apply_rewrite_rule (rule: ('a, 'b) rewrite_rule) sentential_form =
 
 let is_free_of_intermediaries (sentential_form: ('a, 'b) symbol list)
   : bool = List.for_all ~f: (function x -> match x with Intermediary _ -> false | Terminary _ -> true) sentential_form
+
+let unpack_finished_sentence_exn (sentence: ('a, 'b) symbol list): 'a list =
+  let f (x: ('a, 'b) symbol): 'a = match x with
+    | Intermediary (Intermedial _) -> failwith "Cannot unpack — sentence contains intermediaries."
+    | Terminary (Terminal y) -> y
+  in List.map ~f: f sentence

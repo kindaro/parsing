@@ -26,3 +26,8 @@ let generate (grammar: ('a, 'b) grammar): ('a, 'b) symbol list Set.Poly.t Sequen
        then None
        else Some (ys, Set.Poly.union xs ys)
   in Sequence.unfold ~init: initial_sentence ~f: step
+
+let generate_from_grammar_with_depth (grammar: ('a, 'b) grammar) (n: int): 'a list list =
+  let sequence_of_sentences: ('a, 'b) symbol list Set.Poly.t Sequence.t = generate grammar
+in Sequence.take sequence_of_sentences  n |> Sequence.fold ~init: Set.Poly.empty ~f: Set.Poly.union |> Set.Poly.to_list
+   |> List.filter ~f: is_free_of_intermediaries |> List.map ~f: Grammar.unpack_finished_sentence_exn
