@@ -66,3 +66,6 @@ let apply_rewrite_rule (rule: ('a, 'b) rewrite_rule) sentential_form =
   and replace sentential_form ~cut ~replacement = append (take sentential_form cut.offset) (append replacement cut.trailing)
   in let selections = select (fst rule.source :: snd rule.source) sentential_form in
   map selections ~f: (fun x -> replace sentential_form ~cut: x ~replacement: rule.target)
+
+let is_free_of_intermediaries (sentential_form: ('a, 'b) symbol list)
+  : bool = List.for_all ~f: (function x -> match x with Intermediary _ -> false | Terminary _ -> true) sentential_form

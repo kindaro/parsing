@@ -27,6 +27,3 @@ let char (source: string) = List.hd_exn (graphemes source)
 
 let cf_rules (source: string) (targets: string list): ((grapheme, grapheme) context_free_rule_group) =
   {source = Intermedial (char source); target = List.map ~f: (fun s -> sf s) targets}
-
-let is_free_of_intermediaries (sentential_form: (grapheme, grapheme) symbol list)
-    : bool = List.for_all ~f: (function x -> match x with Intermediary _ -> false | Terminary _ -> true) sentential_form
